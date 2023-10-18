@@ -9,7 +9,6 @@ vars var;
 int main(int ac, char **av)
 {
 	char *opcode;
-	ssize_t get;
 
 	if (ac != 2)
 	{
@@ -27,8 +26,14 @@ int main(int ac, char **av)
 		free_all();
 		return (EXIT_FAILURE);
 	}
-	get = getline(&var.buff, &var.tmp, var.file);
-	while (get != EOF)
+	var.buff = (char *)malloc(var.tmp);
+	if (!var.buff)
+	{
+		fprintf(stderr, "Memory allocation failed\n");
+		free_all();
+		return (EXIT_FAILURE);
+	}
+	while (fgets(var.buff, var.tmp, var.file) != NULL)
 	{
 		opcode = strtok(var.buff, " \r\t\n");
 		if (opcode != NULL)
